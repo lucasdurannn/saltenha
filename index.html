@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quem Vai Pagar a Saltenha?</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      background-color: #fff;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .saltenha-photo {
+      width: 220px;
+      height: 220px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin: 20px 0;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-photos {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      gap: 10px;
+    }
+
+    .user-photo {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .user-photo.highlight {
+      border: 3px solid #28a745;
+      padding: 5px;
+    }
+
+    /* Card style for highlighted photo */
+    .user-photo.manoel-highlight {
+      width: 120px;
+      height: 120px;
+      border: 4px solid #28a745;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 12px rgba(0, 128, 0, 0.4);
+      transition: all 0.5s ease;
+    }
+
+    .action-button {
+      background-color: #28a745;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .action-button:hover {
+      background-color: #218838;
+    }
+
+    #resultado {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quem vai pagar a saltenha?</h1>
+    
+    <!-- Foto da saltenha -->
+    <img src="saltenha1.png" alt="Saltenha" class="saltenha-photo">
+    
+    <!-- Fotos dos usuários -->
+    <div class="user-photos">
+      <img src="olimpio.png" alt="Usuário 1" class="user-photo" id="user1">
+      <img src="daniel.png" alt="Usuário 2" class="user-photo" id="user2">
+      <img src="manoel.png" alt="Manoel" class="user-photo" id="manoel-photo">
+      <img src="joy.jpg" alt="Usuário 4" class="user-photo" id="user4">
+      <img src="mateus.png" alt="Usuário 5" class="user-photo" id="user5">
+    </div>
+    
+    <!-- Botão de ação -->
+    <button class="action-button" onclick="sortear()">Sortear</button>
+
+    <p id="resultado">Parabéns, Manoel! Hoje você paga a saltenha!</p>
+  </div>
+
+  <script>
+    function sortear() {
+      const fotos = document.querySelectorAll(".user-photo");
+      const resultado = document.getElementById("resultado");
+      const manoelPhoto = document.getElementById("manoel-photo");
+
+      resultado.style.display = "none";
+      
+      // Remove destaques prévios
+      fotos.forEach(foto => foto.classList.remove("highlight", "manoel-highlight"));
+
+      let contador = 0;
+      const intervalo = setInterval(() => {
+        // Remove destaque anterior
+        fotos.forEach(foto => foto.classList.remove("highlight"));
+
+        // Destaca uma foto de forma sequencial
+        fotos[contador % fotos.length].classList.add("highlight");
+        contador++;
+
+        // Após alguns loops, termina o sorteio sempre no Manoel
+        if (contador > fotos.length * 3) {
+          clearInterval(intervalo);
+          fotos.forEach(foto => foto.classList.remove("highlight"));
+          manoelPhoto.classList.add("manoel-highlight");
+          resultado.style.display = "block";
+
+          // Solta confetes
+          confetti({
+            particleCount: 200,
+            spread: 90,
+            startVelocity: 30,
+            ticks: 300,
+            origin: { y: 0.6 }
+          });
+        }
+      }, 150); // Tempo de troca para a rotação
+    }
+  </script>
+</body>
+</html>
