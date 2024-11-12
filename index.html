@@ -4,36 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quem Vai Pagar a Saltenha?</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f3f4f6;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f1f5f9;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+      overflow: hidden;
     }
 
     .container {
       width: 90%;
       max-width: 500px;
-      background-color: #fff;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 25px;
       text-align: center;
     }
 
     h1 {
-      color: #333;
+      color: #2c3e50;
+      margin-bottom: 10px;
     }
 
     .saltenha-photo {
       width: 220px;
       height: 220px;
-      border-radius: 8px;
+      border-radius: 12px;
       object-fit: cover;
       margin: 20px 0;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -43,7 +45,7 @@
       display: flex;
       justify-content: space-around;
       margin-top: 20px;
-      gap: 10px;
+      gap: 12px;
     }
 
     .user-photo {
@@ -56,30 +58,30 @@
     }
 
     .user-photo.highlight {
-      border: 3px solid #28a745;
+      border: 4px solid #3498db;
       padding: 5px;
     }
 
-    /* Card style for highlighted photo */
     .user-photo.manoel-highlight {
       width: 120px;
       height: 120px;
-      border: 4px solid #28a745;
+      border: 5px solid #28a745;
       padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 12px rgba(0, 128, 0, 0.4);
-      transition: all 0.5s ease;
+      border-radius: 12px;
+      box-shadow: 0px 6px 12px rgba(0, 128, 0, 0.5);
+      animation: winnerFlash 0.8s ease-in-out infinite alternate;
     }
 
     .action-button {
       background-color: #28a745;
       color: #fff;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 25px;
       transition: background-color 0.3s;
     }
 
@@ -88,11 +90,37 @@
     }
 
     #resultado {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
-      color: #333;
+      color: #2c3e50;
       margin-top: 20px;
       display: none;
+      animation: showUp 1s ease forwards;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: var(--confetti-color);
+      top: 0;
+      opacity: 0.8;
+      animation: fall 3s linear infinite;
+    }
+
+    @keyframes fall {
+      0% { opacity: 1; transform: translateY(0) rotate(0); }
+      100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+    }
+
+    @keyframes winnerFlash {
+      0% { box-shadow: 0 0 10px #28a745; transform: scale(1); }
+      100% { box-shadow: 0 0 20px #28a745; transform: scale(1.05); }
+    }
+
+    @keyframes showUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -100,25 +128,42 @@
   <div class="container">
     <h1>Quem vai pagar a saltenha?</h1>
     
-    <!-- Foto da saltenha -->
-    <img src="images\saltenha1.png" alt="Saltenha" class="saltenha-photo">
+    <img src="images/saltenha1.png" alt="Saltenha" class="saltenha-photo">
     
-    <!-- Fotos dos usuários -->
     <div class="user-photos">
-      <img src="images\olimpio.png" alt="Usuário 1" class="user-photo" id="user1">
-      <img src="images\daniel.png" alt="Usuário 2" class="user-photo" id="user2">
-      <img src="images\manoel.png" alt="Manoel" class="user-photo" id="manoel-photo">
-      <img src="images\joy.jpg" alt="Usuário 4" class="user-photo" id="user4">
-      <img src="images\mateus.png" alt="Usuário 5" class="user-photo" id="user5">
+      <img src="images/olimpio.png" alt="Usuário 1" class="user-photo" id="user1">
+      <img src="images/daniel.png" alt="Usuário 2" class="user-photo" id="user2">
+      <img src="images/manoel.png" alt="Manoel" class="user-photo" id="manoel-photo">
+      <img src="images/joy.jpg" alt="Usuário 4" class="user-photo" id="user4">
+      <img src="images/mateus.png" alt="Usuário 5" class="user-photo" id="user5">
     </div>
     
-    <!-- Botão de ação -->
     <button class="action-button" onclick="sortear()">Sortear</button>
 
     <p id="resultado">Parabéns, Manoel! Hoje você paga a saltenha!</p>
   </div>
 
   <script>
+    // Função para criar confetes com CSS puro
+    function soltarConfetes() {
+      const colors = ["#FF3232", "#32FF32", "#3232FF", "#FF9932", "#32FFFF", "#FF32FF"];
+      
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        confetti.style.animationDuration = Math.random() * 2 + 2 + "s";
+        
+        document.body.appendChild(confetti);
+
+        setTimeout(() => confetti.remove(), 3000); // Remove o confetti após a animação
+      }
+    }
+
+    // Função de sorteio
     function sortear() {
       const fotos = document.querySelectorAll(".user-photo");
       const resultado = document.getElementById("resultado");
@@ -126,35 +171,25 @@
 
       resultado.style.display = "none";
       
-      // Remove destaques prévios
       fotos.forEach(foto => foto.classList.remove("highlight", "manoel-highlight"));
 
       let contador = 0;
       const intervalo = setInterval(() => {
-        // Remove destaque anterior
         fotos.forEach(foto => foto.classList.remove("highlight"));
-
-        // Destaca uma foto de forma sequencial
         fotos[contador % fotos.length].classList.add("highlight");
         contador++;
 
-        // Após alguns loops, termina o sorteio sempre no Manoel
         if (contador > fotos.length * 3) {
           clearInterval(intervalo);
           fotos.forEach(foto => foto.classList.remove("highlight"));
           manoelPhoto.classList.add("manoel-highlight");
           resultado.style.display = "block";
-
-          // Solta confetes
-          confetti({
-            particleCount: 200,
-            spread: 90,
-            startVelocity: 30,
-            ticks: 300,
-            origin: { y: 0.6 }
-          });
+          soltarConfetes(); // Chama a função para soltar os confetes
+          
+          // Mantém os confetes ativos para o Manoel
+          setInterval(soltarConfetes, 3000); // Solta confetes continuamente após o sorteio
         }
-      }, 150); // Tempo de troca para a rotação
+      }, 150);
     }
   </script>
 </body>
